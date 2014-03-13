@@ -30,9 +30,9 @@
 @synthesize remindButtonText = _remindButtonText;
 @synthesize cancelButtonText = _cancelButtonText;
 
-static ZLPromptUserReview *sharedInstance;
+#pragma mark Initialization
 
-#pragma mark Getters
+static ZLPromptUserReview *sharedInstance;
 
 + (ZLPromptUserReview *)sharedInstance
 {
@@ -41,6 +41,17 @@ static ZLPromptUserReview *sharedInstance;
     }
     return sharedInstance;
 }
+
+- (id)init
+{
+    self = [super init];
+    if (self) {
+        [self didBecomeActive];
+    }
+    return self;
+}
+
+#pragma mark Getters
 
 - (NSString *)title
 {
@@ -97,12 +108,68 @@ static ZLPromptUserReview *sharedInstance;
     }
 }
 
+#pragma mark Setting prompt paramenters
+
+- (void)setNumberOfApplicationLaunchesToRequestReview:(NSUInteger)numberOfAppLaunches
+{
+    NSInteger numberOfRequiredAppLaunches = [self numberOfRequiredAppLaunches];
+    
+    if (numberOfRequiredAppLaunches != numberOfAppLaunches) {
+        [[NSUserDefaults standardUserDefaults] setInteger:numberOfAppLaunches forKey:ZL_REQUIRED_APP_LAUNCHES_KEY];
+        [[NSUserDefaults standardUserDefaults] setInteger:0 forKey:ZL_CURRENT_APP_LAUNCHES_KEY];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+    }
+}
+
+- (void)bumpUpNumberOfApplicationLauches
+{
+    NSInteger numberOfAppLauches = [self numberOfApplicationLauches];
+    numberOfAppLauches++;
+    
+    [[NSUserDefaults standardUserDefaults] setInteger:numberOfAppLauches forKey:ZL_CURRENT_APP_LAUNCHES_KEY];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
+#pragma mark Getting Prompt Parameters
+
+- (NSInteger)numberOfRequiredAppLaunches
+{
+    NSInteger number = [[NSUserDefaults standardUserDefaults] integerForKey:ZL_REQUIRED_APP_LAUNCHES_KEY];
+    return number;
+}
+
+- (NSInteger)numberOfApplicationLauches
+{
+    NSInteger number = [[NSUserDefaults standardUserDefaults] integerForKey:ZL_CURRENT_APP_LAUNCHES_KEY];
+    return number;
+}
+
 #pragma mark Helpers
 
 - (void)openAppInAppStore
 {
+    
+#if TARGET_IPHONE_SIMULATOR
+    NSLog(@"iTunes App Store is not supported on the iOS simulator. Unable to open App Store page.");
+#else
     NSString *launchUrl = [NSString stringWithFormat:@"itms-apps://itunes.apple.com/app/id%@", self.appID];
     [[UIApplication sharedApplication] openURL:[NSURL URLWithString:launchUrl]];
+#endif
+    
+}
+
+#pragma mark Notification Handlers
+
+- (void)didBecomeActive
+{
+    NSInteger numRequiredLaunches = [self numberOfRequiredAppLaunches];
+    if (numRequiredLaunches > 0) {
+        [self bumpUpNumberOfApplicationLauches];
+        
+        if ([self numberOfApplicationLauches] >= numRequiredLaunches) {
+            [self performSelector:@selector(showPrompt) withObject:nil afterDelay:5.0];
+        }
+    }
 }
 
 @end

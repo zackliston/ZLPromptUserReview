@@ -7,11 +7,14 @@
 //
 
 #import "ZLAppDelegate.h"
+#import "ZLPromptUserReview.h"
 
 @implementation ZLAppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+    [ZLPromptUserReview sharedInstance];
+    [[ZLPromptUserReview sharedInstance] setNumberOfApplicationLaunchesToRequestReview:1];
     // Override point for customization after application launch.
     return YES;
 }
