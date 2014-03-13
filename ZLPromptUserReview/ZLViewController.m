@@ -8,6 +8,7 @@
 
 #import "ZLViewController.h"
 
+#define APP_ID @"660518286"
 @interface ZLViewController ()
 
 @end
@@ -24,6 +25,12 @@
 {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+- (IBAction)showPrompt:(UIButton *)sender
+{
+    [[ZLPromptUserReview sharedInstance] setAppID:APP_ID];
+    [[ZLPromptUserReview sharedInstance] showPrompt];
 }
 
 @end

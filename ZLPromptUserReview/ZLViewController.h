@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "ZLPromptUserReview.h"
 
 @interface ZLViewController : UIViewController
 

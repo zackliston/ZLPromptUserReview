@@ -21,6 +21,7 @@
 		13803EE518D11F9F0041B680 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 13803EC718D11F9F0041B680 /* UIKit.framework */; };
 		13803EED18D11F9F0041B680 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 13803EEB18D11F9F0041B680 /* InfoPlist.strings */; };
 		13803EEF18D11F9F0041B680 /* ZLPromptUserReviewTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 13803EEE18D11F9F0041B680 /* ZLPromptUserReviewTests.m */; };
+		13803EFC18D1247D0041B680 /* ZLPromptUserReview.m in Sources */ = {isa = PBXBuildFile; fileRef = 13803EFB18D1247D0041B680 /* ZLPromptUserReview.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -53,6 +54,8 @@
 		13803EEA18D11F9F0041B680 /* ZLPromptUserReviewTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "ZLPromptUserReviewTests-Info.plist"; sourceTree = "<group>"; };
 		13803EEC18D11F9F0041B680 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		13803EEE18D11F9F0041B680 /* ZLPromptUserReviewTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZLPromptUserReviewTests.m; sourceTree = "<group>"; };
+		13803EFA18D1247D0041B680 /* ZLPromptUserReview.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZLPromptUserReview.h; sourceTree = "<group>"; };
+		13803EFB18D1247D0041B680 /* ZLPromptUserReview.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZLPromptUserReview.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -82,6 +85,7 @@
 		13803EB718D11F9F0041B680 = {
 			isa = PBXGroup;
 			children = (
+				13803EF918D124600041B680 /* ZLPrompUserReviewSource */,
 				13803EC918D11F9F0041B680 /* ZLPromptUserReview */,
 				13803EE818D11F9F0041B680 /* ZLPromptUserReviewTests */,
 				13803EC218D11F9F0041B680 /* Frameworks */,
@@ -150,6 +154,15 @@
 				13803EEB18D11F9F0041B680 /* InfoPlist.strings */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		13803EF918D124600041B680 /* ZLPrompUserReviewSource */ = {
+			isa = PBXGroup;
+			children = (
+				13803EFA18D1247D0041B680 /* ZLPromptUserReview.h */,
+				13803EFB18D1247D0041B680 /* ZLPromptUserReview.m */,
+			);
+			path = ZLPrompUserReviewSource;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -250,6 +263,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				13803EFC18D1247D0041B680 /* ZLPromptUserReview.m in Sources */,
 				13803ED418D11F9F0041B680 /* ZLAppDelegate.m in Sources */,
 				13803ED018D11F9F0041B680 /* main.m in Sources */,
 				13803EDA18D11F9F0041B680 /* ZLViewController.m in Sources */,
@@ -461,6 +475,7 @@
 				13803EF418D11F9F0041B680 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		13803EF518D11F9F0041B680 /* Build configuration list for PBXNativeTarget "ZLPromptUserReviewTests" */ = {
 			isa = XCConfigurationList;
@@ -469,6 +484,7 @@
 				13803EF718D11F9F0041B680 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
