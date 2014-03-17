@@ -21,11 +21,30 @@
 
 + (ZLPromptUserReview *)sharedInstance;
 
+/**
+ REQUIRED! You must set the appID or it will not direct you to the app in the app store.
+ */
 - (void)setAppID:(NSString *)appID;
+
+/**
+ This sets the title of the prompt.
+ */
 - (void)setTitle:(NSString *)title;
+/** 
+ This sets the message of the prompt
+ */
 - (void)setMessage:(NSString *)message;
+/**
+ This sets the text on the Confirm button. The button that takes the user to the app on the App Store
+ */
 - (void)setConfirmButtonText:(NSString *)confirmButtonText;
+/**
+ This sets the text on the Cancel Button
+ */
 - (void)setCancelButtonText:(NSString *)cancelButtonText;
+/**
+ This sets the text on the Remind button
+ */
 - (void)setRemindButtonText:(NSString *)remindButtonText;
 
 /**

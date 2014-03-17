@@ -14,7 +14,7 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     [ZLPromptUserReview sharedInstance];
-    [[ZLPromptUserReview sharedInstance] setNumberOfApplicationLaunchesToRequestReview:1];
+    [[ZLPromptUserReview sharedInstance] setNumberOfApplicationLaunchesToRequestReview:5];
     // Override point for customization after application launch.
     return YES;
 }

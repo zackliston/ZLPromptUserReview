@@ -104,7 +104,7 @@ static ZLPromptUserReview *sharedInstance;
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
 {
     if (buttonIndex == 1) {
-        [self openAppInAppStore];
+        [self rateButtonClicked];
     } else if (buttonIndex == 2) {
         [self remindMeLaterButtonClicked];
     } else if (buttonIndex == 0) {
@@ -125,6 +125,15 @@ static ZLPromptUserReview *sharedInstance;
     NSDate *dateToRemind = [[NSDate alloc] initWithTimeIntervalSinceNow:timeToRemindFromNow];
     
     [[NSUserDefaults standardUserDefaults] setObject:dateToRemind forKey:ZL_DATE_TO_REMIND_KEY];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
+- (void)rateButtonClicked
+{
+    [self openAppInAppStore];
+    [[NSUserDefaults standardUserDefaults] setObject:nil forKey:ZL_DATE_TO_REMIND_KEY];
+    [[NSUserDefaults standardUserDefaults] setInteger:[self numberOfRequiredAppLaunches]+1 forKey:ZL_CURRENT_APP_LAUNCHES_KEY];
+    [[NSUserDefaults standardUserDefaults] setInteger:[self numberOfRequiredSignificantEvents]+1 forKey:ZL_CURRENT_SIG_EVENTS_KEY];
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
@@ -187,7 +196,7 @@ static ZLPromptUserReview *sharedInstance;
     
     NSInteger numOfRequiredEvents = [self numberOfRequiredSignificantEvents];
     
-    if (numberOfEvents >= numOfRequiredEvents) {
+    if (numberOfEvents == numOfRequiredEvents) {
         [self showPrompt];
     }
 }
