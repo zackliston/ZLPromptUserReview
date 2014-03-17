@@ -105,7 +105,27 @@ static ZLPromptUserReview *sharedInstance;
 {
     if (buttonIndex == 1) {
         [self openAppInAppStore];
+    } else if (buttonIndex == 2) {
+        [self remindMeLaterButtonClicked];
+    } else if (buttonIndex == 0) {
+        [self cancelButtonClicked];
     }
+}
+
+- (void)cancelButtonClicked
+{
+    [[NSUserDefaults standardUserDefaults] setInteger:0 forKey:ZL_CURRENT_SIG_EVENTS_KEY];
+    [[NSUserDefaults standardUserDefaults] setInteger:0 forKey:ZL_CURRENT_APP_LAUNCHES_KEY];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
+- (void)remindMeLaterButtonClicked
+{
+    NSTimeInterval timeToRemindFromNow = 60*60*24*[self numberOfDaysToRemindUser];
+    NSDate *dateToRemind = [[NSDate alloc] initWithTimeIntervalSinceNow:timeToRemindFromNow];
+    
+    [[NSUserDefaults standardUserDefaults] setObject:dateToRemind forKey:ZL_DATE_TO_REMIND_KEY];
+    [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
 #pragma mark Setting prompt paramenters
@@ -121,13 +141,55 @@ static ZLPromptUserReview *sharedInstance;
     }
 }
 
-- (void)bumpUpNumberOfApplicationLauches
+- (void)setNumberOfSignificantEventsToRequestReview:(NSUInteger)numberOfEvents
+{
+    NSInteger numberOfRequiredEvents = [self numberOfRequiredSignificantEvents];
+    
+    if (numberOfEvents != numberOfRequiredEvents) {
+        [[NSUserDefaults standardUserDefaults] setInteger:numberOfEvents forKey:ZL_REQUIRED_SIG_EVENTS_KEY];
+        [[NSUserDefaults standardUserDefaults] setInteger:0 forKey:ZL_CURRENT_SIG_EVENTS_KEY];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+    }
+}
+
+- (void)setNumberOfDaysToWaitBeforeRemindingUser:(NSInteger)numberOfDays
+{
+    if (numberOfDays <= 0) {
+        numberOfDays = ZL_DEFAULT_DAYS_TO_REMIND;
+    }
+    
+    [[NSUserDefaults standardUserDefaults] setInteger:numberOfDays forKey:ZL_DAYS_TO_REMIND_KEY];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
+- (void)bumpUpNumberOfApplicationLaunches
 {
     NSInteger numberOfAppLauches = [self numberOfApplicationLauches];
     numberOfAppLauches++;
     
     [[NSUserDefaults standardUserDefaults] setInteger:numberOfAppLauches forKey:ZL_CURRENT_APP_LAUNCHES_KEY];
     [[NSUserDefaults standardUserDefaults] synchronize];
+    
+    NSInteger numRequiredLaunches = [self numberOfRequiredAppLaunches];
+    
+    if (numberOfAppLauches == numRequiredLaunches) {
+        [self performSelector:@selector(showPrompt) withObject:nil afterDelay:5.0];
+    }
+}
+
+- (void)significantEventHappened
+{
+    NSInteger numberOfEvents = [self numberOfSignificantEvents];
+    numberOfEvents++;
+    
+    [[NSUserDefaults standardUserDefaults] setInteger:numberOfEvents forKey:ZL_CURRENT_SIG_EVENTS_KEY];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+    
+    NSInteger numOfRequiredEvents = [self numberOfRequiredSignificantEvents];
+    
+    if (numberOfEvents >= numOfRequiredEvents) {
+        [self showPrompt];
+    }
 }
 
 #pragma mark Getting Prompt Parameters
@@ -142,6 +204,31 @@ static ZLPromptUserReview *sharedInstance;
 {
     NSInteger number = [[NSUserDefaults standardUserDefaults] integerForKey:ZL_CURRENT_APP_LAUNCHES_KEY];
     return number;
+}
+
+- (NSInteger)numberOfRequiredSignificantEvents
+{
+    NSInteger number = [[NSUserDefaults standardUserDefaults] integerForKey:ZL_REQUIRED_SIG_EVENTS_KEY];
+    return number;
+}
+
+- (NSInteger)numberOfSignificantEvents
+{
+    NSInteger number = [[NSUserDefaults standardUserDefaults] integerForKey:ZL_CURRENT_SIG_EVENTS_KEY];
+    return number;
+}
+
+- (NSInteger)numberOfDaysToRemindUser
+{
+    NSInteger number = [[NSUserDefaults standardUserDefaults] integerForKey:ZL_DAYS_TO_REMIND_KEY];
+    
+    if (number == 0) {
+        [[NSUserDefaults standardUserDefaults] setInteger:ZL_DEFAULT_DAYS_TO_REMIND forKey:ZL_DAYS_TO_REMIND_KEY];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+        return ZL_DEFAULT_DAYS_TO_REMIND;
+    } else {
+        return number;
+    }
 }
 
 #pragma mark Helpers
@@ -164,10 +251,19 @@ static ZLPromptUserReview *sharedInstance;
 {
     NSInteger numRequiredLaunches = [self numberOfRequiredAppLaunches];
     if (numRequiredLaunches > 0) {
-        [self bumpUpNumberOfApplicationLauches];
+        [self bumpUpNumberOfApplicationLaunches];
+    }
+    
+    id dateObject = [[NSUserDefaults standardUserDefaults] objectForKey:ZL_DATE_TO_REMIND_KEY];
+    if (dateObject) {
+        NSDate *dateToRemind = (NSDate *)dateObject;
+        NSDate *nowDate = [[NSDate alloc] initWithTimeIntervalSinceNow:0];
         
-        if ([self numberOfApplicationLauches] >= numRequiredLaunches) {
-            [self performSelector:@selector(showPrompt) withObject:nil afterDelay:5.0];
+        if ([dateToRemind compare:nowDate] == NSOrderedDescending) {
+            NSLog(@"Should Not Remind");
+        } else {
+            NSLog(@"Should Remind");
+            [self showPrompt];
         }
     }
 }
