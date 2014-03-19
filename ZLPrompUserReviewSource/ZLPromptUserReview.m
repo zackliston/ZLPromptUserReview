@@ -244,13 +244,24 @@ static ZLPromptUserReview *sharedInstance;
 
 - (void)openAppInAppStore
 {
+ 
     
-#if TARGET_IPHONE_SIMULATOR
+    
+//#if TARGET_IPHONE_SIMULATOR
     NSLog(@"iTunes App Store is not supported on the iOS simulator. Unable to open App Store page.");
-#else
-    NSString *launchUrl = [NSString stringWithFormat:@"itms-apps://itunes.apple.com/app/id%@", self.appID];
+//#else
+    
+    NSString *launchUrl = @"";
+    if([[[UIDevice currentDevice] systemVersion] floatValue] >= 7.0) {
+        NSLog(@"Ios is greater than 7");
+        launchUrl = [NSString stringWithFormat:@"itms-apps://itunes.apple.com/app/id%@", self.appID];
+
+    } else {
+        NSLog(@"ios is less than 7");
+        launchUrl = [NSString stringWithFormat:@"itms-apps://itunes.apple.com/WebObjects/MZStore.woa/wa/viewContentsUserReviews?type=Purple+Software&id=%@", self.appID];
+    }
     [[UIApplication sharedApplication] openURL:[NSURL URLWithString:launchUrl]];
-#endif
+//#endif
     
 }
 
