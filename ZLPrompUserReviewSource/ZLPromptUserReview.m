@@ -244,12 +244,9 @@ static ZLPromptUserReview *sharedInstance;
 
 - (void)openAppInAppStore
 {
- 
-    
-    
-//#if TARGET_IPHONE_SIMULATOR
+ #if TARGET_IPHONE_SIMULATOR
     NSLog(@"iTunes App Store is not supported on the iOS simulator. Unable to open App Store page.");
-//#else
+#else
     
     NSString *launchUrl = @"";
     if([[[UIDevice currentDevice] systemVersion] floatValue] >= 7.0) {
@@ -261,8 +258,7 @@ static ZLPromptUserReview *sharedInstance;
         launchUrl = [NSString stringWithFormat:@"itms-apps://itunes.apple.com/WebObjects/MZStore.woa/wa/viewContentsUserReviews?type=Purple+Software&id=%@", self.appID];
     }
     [[UIApplication sharedApplication] openURL:[NSURL URLWithString:launchUrl]];
-//#endif
-    
+#endif
 }
 
 #pragma mark Notification Handlers
