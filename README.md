@@ -9,7 +9,7 @@ This project allows you (the iOS dev) to prompt users to review your app. It wil
 <h4>PodFile</h4>
 ```
 platform :ios, '6.1'
-pod "ZLPrompUserReview", "->1.0.0"
+pod "ZLPromptUserReview", "->1.0.0"
 ```
 <h3>Source Files</h3>
 If you are not using cocoapods you can simply add the two source files into your project.<br>
